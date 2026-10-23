@@ -137,6 +137,8 @@ function render(data) {
         <span class="rain">${rain ? `💧${rain}%` : "&nbsp;"}</span>
       </div>`;
   }).join("");
+  $("hourly").scrollLeft = 0;
+  updateHourlyControls();
 
   // 7-day forecast with a temperature range bar
   const weekMin = Math.min(...daily.temperature_2m_min);
@@ -319,6 +321,53 @@ $("locateBtn").addEventListener("click", () => {
     { timeout: 10000 }
   );
 });
+
+// ---------- hourly slider: arrows, drag, wheel ----------
+const hourlyEl = $("hourly");
+
+function updateHourlyControls() {
+  const max = hourlyEl.scrollWidth - hourlyEl.clientWidth;
+  const x = hourlyEl.scrollLeft;
+  $("hourPrev").disabled = x <= 2;
+  $("hourNext").disabled = x >= max - 2;
+  hourlyEl.style.setProperty("--fade-left", x > 2 ? "32px" : "0px");
+  hourlyEl.style.setProperty("--fade-right", x < max - 2 ? "32px" : "0px");
+}
+
+function scrollHourly(direction) {
+  hourlyEl.scrollBy({ left: direction * hourlyEl.clientWidth * 0.8, behavior: "smooth" });
+}
+
+$("hourPrev").addEventListener("click", () => scrollHourly(-1));
+$("hourNext").addEventListener("click", () => scrollHourly(1));
+hourlyEl.addEventListener("scroll", updateHourlyControls, { passive: true });
+window.addEventListener("resize", updateHourlyControls);
+
+// Mouse wheel scrolls sideways
+hourlyEl.addEventListener("wheel", (e) => {
+  if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+  e.preventDefault();
+  hourlyEl.scrollBy({ left: e.deltaY, behavior: "auto" });
+}, { passive: false });
+
+// Click and drag with the mouse (touch already swipes natively)
+let drag = null;
+hourlyEl.addEventListener("pointerdown", (e) => {
+  if (e.pointerType !== "mouse") return;
+  drag = { startX: e.clientX, startScroll: hourlyEl.scrollLeft };
+  hourlyEl.classList.add("dragging");
+  hourlyEl.setPointerCapture(e.pointerId);
+});
+hourlyEl.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  hourlyEl.scrollLeft = drag.startScroll - (e.clientX - drag.startX);
+});
+const endDrag = () => {
+  drag = null;
+  hourlyEl.classList.remove("dragging");
+};
+hourlyEl.addEventListener("pointerup", endDrag);
+hourlyEl.addEventListener("pointercancel", endDrag);
 
 // ---------- unit toggle ----------
 function updateUnitButton() {

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyCast — Weather App</title>
+  <meta name="description" content="A fast, free weather app: current conditions, 24-hour and 7-day forecast for any city.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛅</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="clear-day">
+  <main class="app">
+    <header class="topbar">
+      <h1 class="logo">⛅ SkyCast</h1>
+      <button id="unitToggle" class="chip" type="button" aria-label="Switch temperature unit">°C</button>
+    </header>
+
+    <form id="searchForm" class="search" autocomplete="off" role="search">
+      <div class="search-box">
+        <input id="searchInput" type="search" placeholder="Search a city…" aria-label="City name">
+        <ul id="suggestions" class="suggestions" role="listbox" hidden></ul>
+      </div>
+      <button id="locateBtn" class="icon-btn" type="button" title="Use my location" aria-label="Use my location">📍</button>
+    </form>
+
+    <div id="recent" class="recent"></div>
+
+    <p id="status" class="status" role="status"></p>
+
+    <section id="weather" class="weather" hidden>
+      <div class="current card">
+        <div class="current-main">
+          <div>
+            <h2 id="place" class="place"></h2>
+            <p id="localTime" class="muted"></p>
+          </div>
+          <div class="current-temp">
+            <span id="currentIcon" class="big-icon"></span>
+            <span id="currentTemp" class="temp"></span>
+          </div>
+          <p id="currentDesc" class="desc"></p>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="muted">Feels like</span><strong id="feelsLike"></strong></div>
+          <div class="stat"><span class="muted">Humidity</span><strong id="humidity"></strong></div>
+          <div class="stat"><span class="muted">Wind</span><strong id="wind"></strong></div>
+          <div class="stat"><span class="muted">Sunrise / Sunset</span><strong id="sun"></strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Next 24 hours</h3>
+        <div id="hourly" class="hourly"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">7-day forecast</h3>
+        <ul id="daily" class="daily"></ul>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
